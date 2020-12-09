@@ -18,7 +18,9 @@ namespace AprendendoAPI.Data
                 var settings = MongoClientSettings.FromUrl(new MongoUrl(configuration["ConnectionString"]));
                 var client = new MongoClient(settings);
                 DB = client.GetDatabase(configuration["NomeBanco"]);
-                MapClasses();
+                MapClasseInfectado();
+                MapClasseCurado();
+
             }
             catch (Exception ex)
             {
@@ -26,7 +28,7 @@ namespace AprendendoAPI.Data
             }
         }
 
-        private void MapClasses()
+       private void MapClasseInfectado()
         {
             var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("camelCase", conventionPack, t => true);
@@ -39,6 +41,24 @@ namespace AprendendoAPI.Data
                     i.SetIgnoreExtraElements(true);
                 });
             }
+            
+         
         }
+          private void MapClasseCurado()
+        {
+            var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
+            ConventionRegistry.Register("camelCase", conventionPack, t => true);
+
+            if (!BsonClassMap.IsClassMapRegistered(typeof(Curado)))
+            {
+                BsonClassMap.RegisterClassMap<Curado>(i =>
+                {
+                    i.AutoMap();
+                    i.SetIgnoreExtraElements(true);
+                });
+            }
+         
+        }
+        
     }
 }

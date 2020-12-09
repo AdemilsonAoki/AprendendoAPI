@@ -21,11 +21,11 @@ namespace AprendendoAPI.Controllers
         [HttpPost]
         public ActionResult SalvarInfectado([FromBody] InfectadoDto dto)
         {
-            var infectado = new Infectado(dto.DataNascimento, dto.Sexo, dto.Latitude, dto.Longitude);
+            var infectado = new Infectado(dto.Nome, dto.Cpf,  dto.DataNascimento, dto.Sexo, dto.Latitude, dto.Longitude);
 
             _infectadosCollection.InsertOne(infectado);
             
-            return StatusCode(201, "Infectado adicionado com sucesso");
+            return StatusCode(201, "Recuperado adicionado com sucesso");
         }
 
         [HttpGet]
@@ -34,6 +34,26 @@ namespace AprendendoAPI.Controllers
             var infectados = _infectadosCollection.Find(Builders<Infectado>.Filter.Empty).ToList();
             
             return Ok(infectados);
+        }
+
+        [HttpPut]
+
+        public ActionResult AtualizarInfectado([FromBody] InfectadoDto dto)
+        {
+            _infectadosCollection.UpdateOne(Builders<Infectado>.Filter.Where(_ => _.Cpf == dto.Cpf), Builders<Infectado>.Update.Set("nome", dto.Nome));
+
+            return Ok("Nome atualizado com sucesso!");
+
+        }
+        [HttpDelete("{cpf}")]
+
+        public ActionResult Delete(string cpf)
+        {
+            _infectadosCollection.DeleteOne(Builders<Infectado>.Filter.Where(_ => _.Cpf == cpf));
+            
+            return Ok("Excluido com sucesso!!");
+
+
         }
     }
 }
